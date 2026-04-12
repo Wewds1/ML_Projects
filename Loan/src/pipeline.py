@@ -143,8 +143,7 @@ def build_sklearn_pipeline(df: pd.DataFrame):
         "log_annual_income", "log_loan_amount", "log_existing_debt",
         "is_stable_employment", "has_late_payments",
     ]
-    cat_cols = ["employment_type", "loan_purpose", "origination_quarter",
-                "credit_tier", "term_bucket"]
+    cat_cols = ["employment_type", "loan_purpose", "origination_quarter"]
 
     num_pipeline = Pipeline([
         ("imputer", SimpleImputer(strategy="median")),
