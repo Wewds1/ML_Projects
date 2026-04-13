@@ -1,0 +1,2 @@
+model,rmse_test,mae_test,r2_test,cv_rmse_best
+Tuned Random Forest,0.959847265333871,0.5147661260367669,0.912387045856329,0.8595187401426694
