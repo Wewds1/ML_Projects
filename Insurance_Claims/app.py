@@ -26,6 +26,7 @@ class PolicyInput(BaseModel):
     deductible_amount: int
     num_dependents: int
     employment_status: str
+    policy_start_year: int 
     annual_income: float | None = None
     prior_claims_count: int
     prior_claims_amount: float | None = None
@@ -48,8 +49,11 @@ def engineer_features(df_feat: pd.DataFrame) -> pd.DataFrame:
     df_feat['bmi_category'] = pd.cut(df_feat['bmi'], bins=[0, 18.5, 25, 30, 100], labels=['Underweight', 'Normal', 'Overweight', 'Obese'])
     
     # Needs a placeholder income bracket if income is null, pipeline imputer handles the rest
-    df_feat['income_bracket'] = pd.qcut(df_feat['annual_income'], q=3, labels=['Low', 'Medium', 'High'], duplicates='drop')
-    
+    df_feat['income_bracket'] = pd.cut(
+        df_feat['annual_income'].fillna(50000), # fallback if null
+        bins=[-1, 40000, 80000, float('inf')], 
+        labels=['Low', 'Medium', 'High']
+    )    
     # Log transforms for numeric columns
     df_feat['annual_income_log'] = np.log1p(df_feat['annual_income'].fillna(0))
     df_feat['prior_claims_amount_log'] = np.log1p(df_feat['prior_claims_amount'].fillna(0))
