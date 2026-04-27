@@ -1,184 +1,180 @@
-# Loan Interest Rate Prediction
+# Loan Interest Rate Predictor
 
-End-to-end regression project for predicting offered loan interest rates from borrower, loan, and macroeconomic signals.
+Portfolio-ready machine learning project for predicting offered loan interest rates from borrower profile, loan structure, and macroeconomic context. The repository now supports both reproducible model development and deployable API inference.
 
-## Project Objective
+## What Changed
 
-Build a production-style machine learning workflow that:
-- starts from intentionally messy lending data
-- performs robust cleaning and feature engineering
-- compares baseline and non-linear models
-- evaluates performance with interpretable business learnings
+This project was upgraded from a notebook-first repo into a deployable application:
 
-Target:
-- interest_rate_offered (continuous regression target)
+- reusable feature engineering package under `src/loan_predictor`
+- FastAPI inference service with `/health` and `/predict`
+- reproducible training script in `src/train.py`
+- cleanup utility in `scripts/clean.py`
+- lean runtime dependencies and separate dev dependencies
+- deployment assets: `Dockerfile`, `Procfile`, `runtime.txt`
+- test scaffolding for feature engineering and API routes
 
-Domain:
-- Retail lending and credit risk pricing
+## Project Structure
 
-Dataset:
-- 5,000 synthetic loan applications with realistic quality issues
+```text
+Loan/
+├── data/
+│   ├── raw/
+│   └── processed/
+├── models/
+├── notebooks/
+├── reports/
+├── scripts/
+│   └── clean.py
+├── src/
+│   ├── pipeline.py
+│   ├── train.py
+│   └── loan_predictor/
+│       ├── api.py
+│       ├── config.py
+│       ├── features.py
+│       ├── model.py
+│       └── schemas.py
+├── tests/
+├── Dockerfile
+├── Procfile
+├── requirements.txt
+└── requirements-dev.txt
+```
 
-## Repository Structure
+## Local Setup
 
-- data/raw/loan_applications.csv
-- data/processed/loan_applications_engineered.csv
-- notebooks/01_eda.ipynb
-- notebooks/02_feature_eng.ipynb
-- notebooks/03_modeling.ipynb
-- src/pipeline.py
-- models/best_random_forest_pipeline.joblib
-- reports/final_model_metrics.csv
-- reports/test_error_analysis.csv
-- reports/figures
-- reports/num_figures
-- reports/cat_figures
+```bash
+python -m venv .venv
+pip install -r requirements-dev.txt
+```
 
-## End-to-End Workflow
+Activate the virtual environment with the command appropriate for your shell before installing dependencies.
 
-### 1) Exploratory Data Analysis
+## Core Workflows
 
-Notebook:
-- notebooks/01_eda.ipynb
+### 1. Rebuild processed data
 
-What was done:
-- profile of numeric and categorical columns
-- missing value checks
-- duplicate detection
-- univariate plots (histograms and boxplots)
-- skewness and kurtosis diagnostics
-- bivariate and multivariate analysis:
-  - correlation heatmap
-  - categorical vs numeric boxplots
-  - categorical vs categorical cross-tab heatmap
+```bash
+python -m src.pipeline
+```
 
-Key findings:
-- strong skew in annual_income, loan_amount, existing_debt, dti_ratio
-- multicollinearity signal between origination_year and fed_funds_rate
-- category label inconsistencies in employment_type and loan_purpose
-- heavy-tail behavior in debt and ratio variables
+### 2. Retrain the model artifact
 
-Generated EDA assets:
-- reports/num_figures
-- reports/cat_figures
+```bash
+python -m src.train
+```
 
-### 2) Feature Engineering and Data Quality Cleaning
+This saves:
 
-Notebook:
-- notebooks/02_feature_eng.ipynb
+- processed dataset to `data/processed/loans_clean.csv`
+- model artifact to `models/best_random_forest_pipeline.joblib`
+- evaluation metrics to `reports/final_model_metrics.csv`
 
-Reusable pipeline implementation:
-- src/pipeline.py
+### 3. Run the API locally
 
-Data quality actions:
-- duplicate removal (excluding borrower_id from duplication key)
-- categorical standardization:
-  - capitalization normalization
-  - typo and formatting cleanup
-- DTI clipping for extreme outliers
-- imputation strategy:
-  - annual_income by group median (employment_type)
-  - credit_score via KNN imputation
-- log transforms for skewed monetary features
-- categorical encoding for model-ready matrix
+```bash
+uvicorn src.loan_predictor.api:app --reload
+```
 
-Engineered features in pipeline:
-- loan_to_income_ratio
-- debt_to_loan_ratio
-- monthly_payment_est
-- payment_to_income
-- credit_tier
-- log_annual_income
-- log_loan_amount
-- log_existing_debt
-- is_stable_employment
-- has_late_payments
-- term_bucket
-- rate_spread
+Open:
 
-Important leakage control for modeling:
-- rate_spread is removed before training because it is derived from the target.
+- Swagger UI: `http://127.0.0.1:8000/docs`
+- Health: `http://127.0.0.1:8000/health`
 
-### 3) Modeling and Evaluation
+## Prediction Contract
 
-Notebook:
-- notebooks/03_modeling.ipynb
+`POST /predict`
 
-Models compared:
-- Linear Regression
-- Ridge Regression
-- Random Forest Regressor
-- Tuned Random Forest (RandomizedSearchCV)
+Request body:
 
-Evaluation:
-- RMSE
-- MAE
-- R2
-- residual diagnostics
-- feature importance (tree-based and coefficient magnitude views)
+```json
+{
+  "records": [
+    {
+      "borrower_id": "BRW99999",
+      "age": 36,
+      "employment_type": "Salaried",
+      "employment_years": 7.5,
+      "annual_income": 40590.92,
+      "credit_score": 690,
+      "loan_amount": 14000,
+      "loan_term_months": 12,
+      "loan_purpose": "Auto",
+      "existing_debt": 5382.22,
+      "num_open_accounts": 5,
+      "num_late_payments": 0,
+      "dti_ratio": 0.1326,
+      "origination_date": "2023-06-20",
+      "origination_year": 2023,
+      "origination_quarter": "Q2",
+      "fed_funds_rate": 5.278
+    }
+  ]
+}
+```
 
-Residual and importance plots:
-- reports/figures/Linear Regression_residuals.png
-- reports/figures/Ridge Regression_residuals.png
-- reports/figures/Random Forest_residuals.png
-- reports/figures/feature_importance.png
+Response body:
 
-## Results
+```json
+{
+  "predictions": [
+    {
+      "borrower_id": "BRW99999",
+      "predicted_interest_rate": 4.3701
+    }
+  ]
+}
+```
 
-Baseline comparison (holdout test from notebook run):
-- Random Forest: RMSE 0.9665, MAE 0.9341, R2 0.9112
-- Linear Regression: RMSE 1.0583, MAE 1.1200, R2 0.8935
-- Ridge Regression: RMSE 1.0583, MAE 1.1200, R2 0.8935
+## Deployment
 
-Final tuned model metrics:
-Source: reports/final_model_metrics.csv
+### Docker
 
-- Model: Tuned Random Forest
-- Test RMSE: 0.9598
-- Test MAE: 0.5148
-- Test R2: 0.9124
-- Best CV RMSE: 0.8595
+```bash
+docker build -t loan-rate-api .
+docker run -p 8000:8000 loan-rate-api
+```
 
-Saved final model:
-- models/best_random_forest_pipeline.joblib
+### Platform-as-a-service
 
-Saved error analysis:
-- reports/test_error_analysis.csv
+The repo also includes:
 
-## Goals Achieved
+- `Procfile` for Heroku-style process platforms
+- `runtime.txt` for Python version pinning
 
-- completed full pipeline from raw to model artifact
-- handled realistic data quality issues before modeling
-- prevented obvious leakage during training
-- compared linear and non-linear approaches
-- selected a strong final model with reproducible outputs
+If you deploy to Render, Railway, Fly.io, or Heroku-style platforms, point the web service command to:
 
-## Learnings and Takeaways
+```bash
+uvicorn src.loan_predictor.api:app --host 0.0.0.0 --port $PORT
+```
 
-- data cleaning quality directly improved model stability and interpretability
-- non-linear models captured lending behavior better than linear baselines
-- skewed financial variables benefited from transformation and clipping
-- group-aware and KNN imputation were more robust than naive global fills
-- leakage checks are essential in feature engineering for trustworthy metrics
-- reporting artifacts (figures, metrics CSV, saved model) make the project portfolio-ready and reproducible
+## Testing and Cleanup
 
-## How To Run
+Run tests:
 
-1. Install dependencies.
+```bash
+pytest
+```
 
-   pip install -r requirements.txt
+Run cleanup:
 
-2. Run the preprocessing pipeline.
+```bash
+python scripts/clean.py
+```
 
-   python src/pipeline.py
+## Portfolio Notes
 
-3. Run notebooks in order.
+This project now presents well in a portfolio because it shows:
 
-- notebooks/01_eda.ipynb
-- notebooks/02_feature_eng.ipynb
-- notebooks/03_modeling.ipynb
+- messy data handling instead of toy-clean datasets
+- feature engineering separated from notebooks
+- train vs inference separation
+- a callable API instead of notebook-only output
+- deployment assets that make the repo easy to review and run
 
-## Notes
+## Limitations
 
-- Dataset is synthetic and intended for educational and portfolio use.
-- No real borrower personal data is included.
+- The saved model artifact must exist before the API can serve predictions.
+- The dataset is synthetic and intended for educational and portfolio use.
+- The current API is synchronous and optimized for simple portfolio deployments rather than high-throughput production traffic.
