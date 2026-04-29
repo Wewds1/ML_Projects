@@ -1,0 +1,202 @@
+{
+  "dataset": {
+    "raw_rows": 7028,
+    "modeled_rows": 7000,
+    "duplicates_removed": 28
+  },
+  "experiments": {
+    "structured_only": {
+      "rmse_log": 0.6178384351415446,
+      "r2": 0.9562017357579387,
+      "mae_usd": 135.54722012188918,
+      "segment_rmse_log": {
+        "Basic": 0.1550831764148759,
+        "Enterprise": 0.19983520998338153,
+        "Free": 1.079094533330207,
+        "Pro": 0.19771199356241587
+      },
+      "test_size": 1400
+    },
+    "structured_plus_sentiment": {
+      "rmse_log": 0.6171963505739291,
+      "r2": 0.9562927225760397,
+      "mae_usd": 126.02836246231001,
+      "segment_rmse_log": {
+        "Basic": 0.1554556874078152,
+        "Enterprise": 0.17963602875493853,
+        "Free": 1.0801495355512702,
+        "Pro": 0.1920685889467682
+      },
+      "test_size": 1400
+    },
+    "structured_plus_tfidf": {
+      "rmse_log": 0.6198498142508916,
+      "r2": 0.9559161002078244,
+      "mae_usd": 135.01141224061166,
+      "segment_rmse_log": {
+        "Basic": 0.15745068768558354,
+        "Enterprise": 0.18909698601283106,
+        "Free": 1.082941855806801,
+        "Pro": 0.2000098336075186
+      },
+      "test_size": 1400
+    },
+    "all_nlp_features": {
+      "rmse_log": 0.6192792146471569,
+      "r2": 0.9559972252718743,
+      "mae_usd": 137.69875064717752,
+      "segment_rmse_log": {
+        "Basic": 0.15804284171699226,
+        "Enterprise": 0.1912333753952181,
+        "Free": 1.0810748643379933,
+        "Pro": 0.20376071469538587
+      },
+      "test_size": 1400
+    }
+  },
+  "best_experiment": "structured_plus_sentiment",
+  "feature_columns": [
+    "customer_age",
+    "tenure_months",
+    "monthly_spend",
+    "login_freq_monthly",
+    "feature_adoption",
+    "support_tickets_6m",
+    "nps_score",
+    "payment_failures_6m",
+    "referrals_made",
+    "days_since_login",
+    "nps_missing",
+    "feedback_missing",
+    "spend_per_login",
+    "ticket_rate",
+    "referral_value_est",
+    "engagement_score",
+    "churn_risk_proxy",
+    "log_monthly_spend",
+    "log_tenure_months",
+    "log_days_since_login",
+    "sqrt_login_freq",
+    "product_tier_ordinal",
+    "country_AU",
+    "country_BR",
+    "country_CA",
+    "country_DE",
+    "country_FR",
+    "country_IN",
+    "country_MX",
+    "country_SG",
+    "country_UK",
+    "country_US",
+    "acquisition_channel_Direct",
+    "acquisition_channel_Email Campaign",
+    "acquisition_channel_Organic Search",
+    "acquisition_channel_Paid Ads",
+    "acquisition_channel_Referral",
+    "acquisition_channel_Social Media",
+    "gender_Female",
+    "gender_Male",
+    "gender_Non-Binary",
+    "nps_category_Detractor",
+    "nps_category_Passive",
+    "nps_category_Promoter",
+    "sentiment_polarity",
+    "sentiment_subjectivity",
+    "has_negation",
+    "churn_language",
+    "praise_language",
+    "feedback_word_count"
+  ],
+  "tfidf_components": [
+    "tfidf_svd_0",
+    "tfidf_svd_1",
+    "tfidf_svd_2",
+    "tfidf_svd_3",
+    "tfidf_svd_4",
+    "tfidf_svd_5",
+    "tfidf_svd_6",
+    "tfidf_svd_7",
+    "tfidf_svd_8",
+    "tfidf_svd_9",
+    "tfidf_svd_10",
+    "tfidf_svd_11",
+    "tfidf_svd_12",
+    "tfidf_svd_13",
+    "tfidf_svd_14",
+    "tfidf_svd_15",
+    "tfidf_svd_16",
+    "tfidf_svd_17",
+    "tfidf_svd_18",
+    "tfidf_svd_19",
+    "tfidf_svd_20",
+    "tfidf_svd_21",
+    "tfidf_svd_22",
+    "tfidf_svd_23",
+    "tfidf_svd_24",
+    "tfidf_svd_25",
+    "tfidf_svd_26",
+    "tfidf_svd_27",
+    "tfidf_svd_28",
+    "tfidf_svd_29"
+  ],
+  "vectorizer_vocabulary_size": 358,
+  "svd_explained_variance": 0.9830071911954743,
+  "category_levels": {
+    "countries": [
+      "AU",
+      "BR",
+      "CA",
+      "DE",
+      "FR",
+      "IN",
+      "MX",
+      "SG",
+      "UK",
+      "US"
+    ],
+    "acquisition_channel": [
+      "Organic Search",
+      "Paid Ads",
+      "Referral",
+      "Social Media",
+      "Email Campaign",
+      "Direct"
+    ],
+    "gender": [
+      "Male",
+      "Female",
+      "Non-Binary"
+    ],
+    "nps_category": [
+      "Detractor",
+      "Passive",
+      "Promoter"
+    ]
+  },
+  "imputers": {
+    "tier_nps_median": {
+      "Basic": 7.0,
+      "Enterprise": 7.0,
+      "Free": 7.0,
+      "Pro": 7.0
+    },
+    "tier_spend_median": {
+      "Basic": 24.65,
+      "Enterprise": 387.96,
+      "Free": 0.0,
+      "Pro": 90.81
+    },
+    "tier_feature_adoption_median": {
+      "Basic": 0.386,
+      "Enterprise": 0.396,
+      "Free": 0.371,
+      "Pro": 0.389
+    }
+  },
+  "product_tier_map": {
+    "Free": 0,
+    "Basic": 1,
+    "Pro": 2,
+    "Enterprise": 3
+  }
+}

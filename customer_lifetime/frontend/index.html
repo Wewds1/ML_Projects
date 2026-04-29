@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CLV Predictor</title>
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Customer Analytics</p>
+        <h1>Predict 12-month customer value with behavioral signals and product feedback.</h1>
+        <p class="lede">
+          This deployment pairs a trained gradient boosting regressor with sentiment-aware text features
+          so teams can estimate customer lifetime value and inspect the qualitative signals behind the score.
+        </p>
+      </div>
+      <div class="hero-card" id="model-metadata">
+        <span class="label">Model status</span>
+        <strong>Loading metrics...</strong>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel form-panel">
+        <div class="panel-header">
+          <h2>Prediction input</h2>
+          <button id="load-sample" type="button">Load sample</button>
+        </div>
+        <form id="predict-form">
+          <div class="grid">
+            <label><span>Age</span><input name="customer_age" type="number" min="18" max="100" value="34" required></label>
+            <label><span>Gender</span><select name="gender"><option>Female</option><option>Male</option><option>Non-Binary</option></select></label>
+            <label><span>Country</span><input name="country" value="US" maxlength="3" required></label>
+            <label><span>Channel</span><select name="acquisition_channel"><option>Referral</option><option>Organic Search</option><option>Paid Ads</option><option>Social Media</option><option>Email Campaign</option><option>Direct</option></select></label>
+            <label><span>Tier</span><select name="product_tier"><option>Pro</option><option>Basic</option><option>Enterprise</option><option>Free</option></select></label>
+            <label><span>Tenure months</span><input name="tenure_months" type="number" min="0" value="22" required></label>
+            <label><span>Monthly spend</span><input name="monthly_spend" type="number" min="0" step="0.01" value="189"></label>
+            <label><span>Logins / month</span><input name="login_freq_monthly" type="number" min="0" value="23" required></label>
+            <label><span>Feature adoption</span><input name="feature_adoption" type="number" min="0" max="1" step="0.01" value="0.71"></label>
+            <label><span>Support tickets (6m)</span><input name="support_tickets_6m" type="number" min="0" value="1" required></label>
+            <label><span>NPS score</span><input name="nps_score" type="number" min="0" max="10" step="0.1" value="9"></label>
+            <label><span>Payment failures (6m)</span><input name="payment_failures_6m" type="number" min="0" value="0" required></label>
+            <label><span>Referrals made</span><input name="referrals_made" type="number" min="0" value="2" required></label>
+            <label><span>Days since login</span><input name="days_since_login" type="number" min="0" value="4" required></label>
+          </div>
+          <label class="textarea">
+            <span>Customer feedback</span>
+            <textarea name="customer_feedback" rows="6">Love the reporting workflow. The mobile app still needs work, but overall I would recommend it.</textarea>
+          </label>
+          <button class="submit" type="submit">Estimate CLV</button>
+        </form>
+      </section>
+
+      <section class="panel result-panel">
+        <div class="panel-header">
+          <h2>Prediction output</h2>
+          <span class="status" id="status-text">Ready</span>
+        </div>
+        <div class="result-card">
+          <p class="label">Estimated 12-month CLV</p>
+          <h3 id="clv-value">$0.00</h3>
+          <p id="prediction-detail">Submit the form to generate a production-style estimate.</p>
+        </div>
+        <div class="signal-grid">
+          <article>
+            <span>Sentiment polarity</span>
+            <strong id="sentiment-value">0.000</strong>
+          </article>
+          <article>
+            <span>Subjectivity</span>
+            <strong id="subjectivity-value">0.000</strong>
+          </article>
+          <article>
+            <span>Churn language</span>
+            <strong id="churn-value">0</strong>
+          </article>
+          <article>
+            <span>Praise language</span>
+            <strong id="praise-value">0</strong>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/assets/app.js"></script>
+</body>
+</html>
+
