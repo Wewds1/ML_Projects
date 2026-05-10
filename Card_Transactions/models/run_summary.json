@@ -1,0 +1,48 @@
+{
+  "eda": {
+    "fraud_rate": 0.028033240997229918,
+    "duplicates_removed": 25,
+    "missing_summary": {
+      "merchant_country": 361,
+      "avg_7day_spend": 271,
+      "days_since_last_txn": 270
+    },
+    "top_correlations": {
+      "declined_last_30d": 0.055,
+      "is_foreign": 0.0523,
+      "foreign_online": 0.0469,
+      "is_late_night": 0.0366,
+      "late_night_foreign": 0.0321,
+      "txn_velocity_ratio": 0.0214,
+      "merchant_country_missing": 0.0203,
+      "is_new_account": 0.0145,
+      "days_since_last_missing": 0.0136,
+      "days_since_last_txn": 0.0135
+    }
+  },
+  "modeling": {
+    "best_model": "logistic_balanced",
+    "threshold": 0.6533460257003714,
+    "test_metrics": {
+      "test_pr_auc": 0.035479115800364155,
+      "test_roc_auc": 0.5650057142857143,
+      "test_precision": 0.02262443438914027,
+      "test_recall": 0.1,
+      "test_f1": 0.03690036900369004
+    },
+    "confusion_matrix": [
+      [
+        1534,
+        216
+      ],
+      [
+        45,
+        5
+      ]
+    ]
+  },
+  "row_counts": {
+    "raw": 9025,
+    "clean": 9000
+  }
+}

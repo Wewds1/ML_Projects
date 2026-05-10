@@ -1,0 +1,12 @@
+{
+  "threshold": 0.6533460257003714,
+  "model_name": "logistic_balanced",
+  "port": 6000,
+  "metrics": {
+    "test_pr_auc": 0.035479115800364155,
+    "test_roc_auc": 0.5650057142857143,
+    "test_precision": 0.02262443438914027,
+    "test_recall": 0.1,
+    "test_f1": 0.03690036900369004
+  }
+}

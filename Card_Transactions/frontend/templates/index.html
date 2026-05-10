@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CardShield Fraud Detection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Portfolio ML System</p>
+        <h1>CardShield</h1>
+        <p class="lede">
+          A fraud scoring interface backed by FastAPI and an imbalanced-learning pipeline.
+          The current decision threshold is <strong>{{ threshold }}</strong> using <strong>{{ model_name }}</strong>.
+        </p>
+      </div>
+      <div class="hero-panel pulse-panel">
+        <div class="stat">
+          <span>API</span>
+          <strong>/predict</strong>
+        </div>
+        <div class="stat">
+          <span>Health</span>
+          <strong>/health</strong>
+        </div>
+        <div class="stat">
+          <span>Port</span>
+          <strong>6000</strong>
+        </div>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="card form-card">
+        <div class="section-head">
+          <h2>Transaction Probe</h2>
+          <p>Enter a transaction and get the fraud probability plus the approval action.</p>
+        </div>
+        <form id="prediction-form">
+          <div class="form-grid">
+            <label><span>Hour</span><input type="number" name="hour_of_day" min="0" max="23" value="2" required></label>
+            <label><span>Day of Week</span><input type="number" name="day_of_week" min="0" max="6" value="5" required></label>
+            <label><span>Weekend</span><select name="is_weekend"><option value="1">1</option><option value="0">0</option></select></label>
+            <label><span>Month</span><input type="number" name="month" min="1" max="12" value="10" required></label>
+            <label><span>Age</span><input type="number" name="cardholder_age" min="18" max="100" value="32" required></label>
+            <label><span>Account Age Days</span><input type="number" name="account_age_days" min="0" value="41" required></label>
+            <label><span>Credit Limit</span><input type="number" name="credit_limit" min="1" step="0.01" value="4500" required></label>
+            <label><span>Merchant Category</span><input type="text" name="merchant_category" value="Online_Retail" required></label>
+            <label><span>Merchant Country</span><input type="text" name="merchant_country" value="US"></label>
+            <label><span>Foreign</span><select name="is_foreign"><option value="0">0</option><option value="1">1</option></select></label>
+            <label><span>Amount</span><input type="number" name="transaction_amount" min="0.01" step="0.01" value="1299.99" required></label>
+            <label><span>Avg 7-Day Spend</span><input type="number" name="avg_7day_spend" min="0" step="0.01" value="220.00"></label>
+            <label><span>Txn 24h</span><input type="number" name="num_txn_24h" min="0" value="9" required></label>
+            <label><span>Txn 7d</span><input type="number" name="num_txn_7d" min="0" value="14" required></label>
+            <label><span>Days Since Last Txn</span><input type="number" name="days_since_last_txn" min="0" step="0.1" value="0.2"></label>
+            <label><span>Distinct Merchants 7d</span><input type="number" name="distinct_merchants_7d" min="0" value="4" required></label>
+            <label><span>Declined Last 30d</span><input type="number" name="declined_last_30d" min="0" value="2" required></label>
+            <label><span>Channel</span><input type="text" name="channel" value="Online" required></label>
+            <label><span>Device Type</span><input type="text" name="device_type" value="Mobile" required></label>
+          </div>
+          <button type="submit" class="primary-btn">Score Transaction</button>
+        </form>
+      </section>
+
+      <section class="card results-card" id="results-card">
+        <div class="section-head">
+          <h2>Decision Feed</h2>
+          <p>Live result from the model API.</p>
+        </div>
+        <div class="result-shell hidden" id="result-shell">
+          <div class="result-chip" id="result-chip">Awaiting input</div>
+          <h3 id="action-text">No score yet</h3>
+          <p class="metric">Fraud probability: <strong id="probability-text">--</strong></p>
+          <p class="metric">Threshold used: <strong id="threshold-text">--</strong></p>
+          <p class="metric">Model: <strong id="model-text">--</strong></p>
+        </div>
+        <div class="empty-state" id="empty-state">
+          <p>The UI is wired straight into FastAPI, so this works like a real scoring demo instead of a notebook screenshot.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
